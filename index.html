@@ -3,136 +3,192 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Business Law Final Exam Prep</title>
+  <title>Business Law Readiness Lab</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">Business Law 201</p>
-        <h1>Final Exam Prep Lab</h1>
-      </div>
+<div class="app-shell">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">BUSN 201 Business Law</p>
+      <h1>Business Law Readiness Lab</h1>
+    </div>
+    <div class="top-actions">
       <button id="homeBtn" class="ghost-btn hidden" type="button">Dashboard</button>
-    </header>
+      <button id="reportBtn" class="ghost-btn hidden" type="button">Instructor Report</button>
+    </div>
+  </header>
 
-    <section id="progressPanel" class="progress-panel hidden" aria-label="Session progress">
-      <div class="progress-copy">
-        <strong id="progressLabel">0% complete</strong>
-        <span id="readinessLabel">Distance to readiness: 80 points</span>
-      </div>
-      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <div id="progressFill" class="progress-fill"></div>
-      </div>
-      <p id="nearComplete" class="near-complete hidden">You are close. Finish the current activity and take the Readiness Challenge.</p>
+  <section id="progressPanel" class="progress-panel hidden" aria-label="Session progress">
+    <div class="progress-copy">
+      <strong id="progressLabel">0% complete</strong>
+      <span id="readinessLabel">Distance to readiness: 80 points</span>
+    </div>
+    <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div id="progressFill" class="progress-fill"></div>
+    </div>
+    <p id="nearComplete" class="near-complete hidden">You are close. Finish the current activity and take the Readiness Challenge.</p>
+  </section>
+
+  <main>
+    <section id="startScreen" class="card start-card">
+      <div class="badge">Adaptive Practice</div>
+      <h2>Prepare by practicing, not memorizing.</h2>
+      <p>This tool uses retrieval practice, immediate feedback, error correction, repetition, weak-area recommendations, and a final readiness challenge.</p>
+      <label for="studentName">Student sign-on name</label>
+      <input id="studentName" type="text" placeholder="Enter the same name each time" autocomplete="name" />
+      <p class="small-note"><strong>Important:</strong> Use the same sign-on name each time so the tool can remember your weak areas on this device and browser.</p>
+      <button id="startBtn" class="primary-btn" type="button">Start Practice</button>
+      <p class="small-note">No actual exam questions are used. Practice items are concept-based and derived from the course quiz export.</p>
     </section>
 
-    <main>
-      <section id="startScreen" class="card start-card">
-        <div class="badge">Retrieval Practice</div>
-        <h2>Prepare by practicing, not memorizing.</h2>
-        <p>This tool uses short practice rounds, immediate feedback, correction, repetition, and a final readiness challenge.</p>
-        <label for="studentName">Student name for certificate</label>
-        <input id="studentName" type="text" placeholder="Enter your name" autocomplete="name" />
-        <button id="startBtn" class="primary-btn" type="button">Start Practice</button>
-        <p class="small-note">No actual exam questions are used. Practice items are based on key Business Law concepts.</p>
-      </section>
-
-      <section id="dashboard" class="hidden">
-        <div class="dashboard-grid">
-          <article class="card stat-card">
-            <span class="stat-label">Attempts</span>
-            <strong id="attemptsStat">0</strong>
-          </article>
-          <article class="card stat-card">
-            <span class="stat-label">Best Challenge Score</span>
-            <strong id="bestScoreStat">0%</strong>
-          </article>
-          <article class="card stat-card">
-            <span class="stat-label">Terms Mastered</span>
-            <strong id="masteredStat">0</strong>
-          </article>
-          <article class="card stat-card readiness-card">
-            <span class="stat-label">Readiness Status</span>
-            <strong id="readinessStat">Not Ready Yet</strong>
-          </article>
-        </div>
-
-        <section class="card">
-          <h2>Choose a Practice Mode</h2>
-          <div class="mode-grid">
-            <button class="mode-card" data-mode="flashcards" type="button">
-              <span>01</span>
-              <strong>Flashcards</strong>
-              <small>Term, definition, example, common mistake</small>
-            </button>
-            <button class="mode-card" data-mode="matching" type="button">
-              <span>02</span>
-              <strong>Matching</strong>
-              <small>Pair terms with plain-English definitions</small>
-            </button>
-            <button class="mode-card" data-mode="tf" type="button">
-              <span>03</span>
-              <strong>Misconception Checks</strong>
-              <small>True or false with instant correction</small>
-            </button>
-            <button class="mode-card" data-mode="scenario" type="button">
-              <span>04</span>
-              <strong>Scenario Practice</strong>
-              <small>Apply concepts to business situations</small>
-            </button>
-            <button class="mode-card challenge" data-mode="final" type="button">
-              <span>05</span>
-              <strong>Readiness Challenge</strong>
-              <small>Score by category and print certificate</small>
-            </button>
-          </div>
-        </section>
-
-        <section class="card">
-          <h2>Category Performance</h2>
-          <div id="categoryBreakdown" class="category-grid"></div>
-        </section>
-      </section>
-
-      <section id="activityScreen" class="card hidden">
-        <div class="activity-header">
+    <section id="dashboard" class="hidden">
+      <section class="card">
+        <div class="dashboard-header">
           <div>
-            <p id="activityKicker" class="eyebrow">Practice</p>
-            <h2 id="activityTitle">Activity</h2>
+            <h2 id="welcomeName">Practice Dashboard</h2>
+            <p class="small-note">Choose a module or select Final Comprehensive Review for mixed practice.</p>
           </div>
-          <p id="activityCounter" class="counter"></p>
+          <div>
+            <label for="moduleFilter">Practice section</label>
+            <select id="moduleFilter"></select>
+          </div>
         </div>
-        <div id="activityContent"></div>
       </section>
 
-      <section id="resultsScreen" class="card hidden">
-        <h2>Readiness Challenge Results</h2>
-        <p id="resultSummary"></p>
-        <div id="resultBreakdown" class="category-grid"></div>
+      <div class="dashboard-grid">
+        <article class="card stat-card">
+          <span class="stat-label">Attempts</span>
+          <strong id="attemptsStat">0</strong>
+        </article>
+        <article class="card stat-card">
+          <span class="stat-label">Best Challenge Score</span>
+          <strong id="bestScoreStat">0%</strong>
+        </article>
+        <article class="card stat-card">
+          <span class="stat-label">Terms Mastered</span>
+          <strong id="masteredStat">0</strong>
+        </article>
+        <article class="card stat-card readiness-card">
+          <span class="stat-label">Readiness Status</span>
+          <strong id="readinessStat">Not Ready Yet</strong>
+        </article>
+      </div>
+
+      <section class="card recommendation-card">
+        <h2>Recommended Next Step</h2>
+        <p id="adaptiveRecommendation">Complete a quick practice round so the tool can identify your weak areas.</p>
+        <div id="weakAreaList" class="weak-area-list"></div>
+        <button id="startRecommendedBtn" class="primary-btn" type="button">Start Recommended Practice</button>
+      </section>
+
+      <section class="card">
+        <h2>Choose a Practice Mode</h2>
+        <div class="mode-grid">
+          <button class="mode-card" data-mode="flashcards" type="button">
+            <span>01</span>
+            <strong>Flashcards</strong>
+            <small>Term, definition, example, common mistake</small>
+          </button>
+          <button class="mode-card" data-mode="matching" type="button">
+            <span>02</span>
+            <strong>Multi-Round Matching</strong>
+            <small>6 → 8 → 10 items</small>
+          </button>
+          <button class="mode-card" data-mode="weakmatch" type="button">
+            <span>03</span>
+            <strong>Weak-Area Matching</strong>
+            <small>Targets your lowest areas</small>
+          </button>
+          <button class="mode-card" data-mode="tf" type="button">
+            <span>04</span>
+            <strong>Misconception Checks</strong>
+            <small>True/false with correction</small>
+          </button>
+          <button class="mode-card" data-mode="scenario" type="button">
+            <span>05</span>
+            <strong>Scenario Practice</strong>
+            <small>Apply concepts to business situations</small>
+          </button>
+          <button class="mode-card challenge" data-mode="final" type="button">
+            <span>06</span>
+            <strong>Readiness Challenge</strong>
+            <small>Adaptive + balanced final review</small>
+          </button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Category Performance</h2>
+        <div id="categoryBreakdown" class="category-grid"></div>
+      </section>
+
+      <section class="card">
+        <h2>Module Performance</h2>
+        <div id="moduleBreakdown" class="category-grid"></div>
+      </section>
+    </section>
+
+    <section id="activityScreen" class="card hidden">
+      <div class="activity-header">
+        <div>
+          <p id="activityKicker" class="eyebrow blue">Practice</p>
+          <h2 id="activityTitle">Activity</h2>
+        </div>
+        <p id="activityCounter" class="counter"></p>
+      </div>
+      <div id="activityContent"></div>
+    </section>
+
+    <section id="resultsScreen" class="card hidden">
+      <h2>Readiness Challenge Results</h2>
+      <p id="resultSummary"></p>
+      <div id="resultBreakdown" class="category-grid"></div>
+      <div class="result-actions">
+        <button id="printCertBtn" class="primary-btn" type="button">Print Certificate</button>
+        <button id="returnBtn" class="ghost-btn" type="button">Return to Dashboard</button>
+      </div>
+    </section>
+
+    <section id="reportScreen" class="card hidden">
+      <h2>Instructor Report</h2>
+      <div id="reportGate">
+        <p>This report is instructor-facing and summarizes data stored in this browser only.</p>
+        <label for="reportCode">Instructor passcode</label>
+        <input id="reportCode" type="password" placeholder="Enter passcode" />
+        <button id="unlockReportBtn" class="primary-btn" type="button">Open Report</button>
+        <p class="small-note">Default passcode is listed in the README. Change it in script.js before deployment if desired.</p>
+      </div>
+      <div id="reportContent" class="hidden">
+        <div id="reportSummary" class="dashboard-grid"></div>
+        <h3>Weak Area Trends</h3>
+        <div id="reportWeakTrends" class="category-grid"></div>
+        <h3>Student Profiles Stored on This Browser</h3>
+        <div id="reportStudents"></div>
         <div class="result-actions">
-          <button id="printCertBtn" class="primary-btn" type="button">Print Certificate</button>
-          <button id="returnBtn" class="ghost-btn" type="button">Return to Dashboard</button>
+          <button id="downloadReportBtn" class="primary-btn" type="button">Download CSV Report</button>
+          <button id="clearOldDataBtn" class="ghost-btn" type="button">Clear Data Older Than 48 Days</button>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="certificate" class="certificate hidden" aria-label="Certificate of completion">
-        <div class="cert-inner">
-          <p class="cert-kicker">Certificate of Business Law Readiness Practice</p>
-          <h2 id="certName">Student Name</h2>
-          <p>completed the Business Law Final Exam Prep Readiness Challenge.</p>
-          <div class="cert-grid">
-            <div><strong id="certScore">0%</strong><span>Best Score</span></div>
-            <div><strong id="certAttempts">0</strong><span>Attempts</span></div>
-            <div><strong id="certDate"></strong><span>Date</span></div>
-          </div>
-          <p class="cert-note">This certificate verifies practice completion. It does not reveal or reproduce exam questions.</p>
+    <section id="certificate" class="certificate hidden" aria-label="Certificate of completion">
+      <div class="cert-inner">
+        <p class="cert-kicker">Certificate of Business Law Readiness Practice</p>
+        <h2 id="certName">Student Name</h2>
+        <p>completed the BUSN 201 Business Law Readiness Challenge.</p>
+        <div class="cert-grid">
+          <div><strong id="certScore">0%</strong><span>Best Score</span></div>
+          <div><strong id="certAttempts">0</strong><span>Attempts</span></div>
+          <div><strong id="certDate"></strong><span>Date</span></div>
         </div>
-      </section>
-    </main>
-  </div>
+        <p class="cert-note">This certificate verifies practice completion. It does not reveal or reproduce exam questions.</p>
+      </div>
+    </section>
+  </main>
+</div>
 
-  <script src="terms.js"></script>
-  <script src="script.js"></script>
+<script src="terms.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
