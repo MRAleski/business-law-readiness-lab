@@ -1,343 +1,344 @@
-const state = {
-  studentName: "",
-  attempts: Number(localStorage.getItem("blAttempts") || 0),
-  bestScore: Number(localStorage.getItem("blBestScore") || 0),
-  mastered: JSON.parse(localStorage.getItem("blMastered") || "[]"),
-  categoryStats: JSON.parse(localStorage.getItem("blCategoryStats") || "{}"),
-  sessionProgress: 0,
-  currentItems: [],
-  currentIndex: 0,
-  currentScore: 0,
-  currentMode: "",
-  finalResults: {}
-};
-
-const $ = (id) => document.getElementById(id);
-
-function saveState() {
-  localStorage.setItem("blAttempts", state.attempts);
-  localStorage.setItem("blBestScore", state.bestScore);
-  localStorage.setItem("blMastered", JSON.stringify(state.mastered));
-  localStorage.setItem("blCategoryStats", JSON.stringify(state.categoryStats));
+:root {
+  --navy: #1e3a5f;
+  --blue: #2d5a8c;
+  --green: #2e7d32;
+  --gold: #b7791f;
+  --red: #b42318;
+  --ink: #1f2937;
+  --muted: #64748b;
+  --line: #d9e2ec;
+  --bg: #f5f7fb;
+  --card: #ffffff;
 }
 
-function shuffle(array) {
-  return [...array].sort(() => Math.random() - 0.5);
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
 }
 
-function showOnly(id) {
-  ["startScreen", "dashboard", "activityScreen", "resultsScreen", "certificate"].forEach(screen => {
-    $(screen).classList.toggle("hidden", screen !== id);
-  });
-  $("homeBtn").classList.toggle("hidden", id === "startScreen" || id === "dashboard");
-  $("progressPanel").classList.toggle("hidden", id === "startScreen");
+button, input, select { font: inherit; }
+
+.app-shell {
+  max-width: 1160px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
-function updateDashboard() {
-  $("attemptsStat").textContent = state.attempts;
-  $("bestScoreStat").textContent = `${state.bestScore}%`;
-  $("masteredStat").textContent = state.mastered.length;
-  $("readinessStat").textContent = state.bestScore >= 80 ? "Ready" : "Practice More";
-  $("readinessStat").style.color = state.bestScore >= 80 ? "#2e7d32" : "#b7791f";
-  renderCategoryBreakdown("categoryBreakdown", state.categoryStats);
-  updateProgress(state.sessionProgress);
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  color: #fff;
+  padding: 1.25rem;
+  border-radius: 0 0 18px 18px;
 }
 
-function updateProgress(value) {
-  state.sessionProgress = Math.max(0, Math.min(100, value));
-  $("progressFill").style.width = `${state.sessionProgress}%`;
-  document.querySelector(".progress-track").setAttribute("aria-valuenow", state.sessionProgress);
-  $("progressLabel").textContent = `${Math.round(state.sessionProgress)}% complete`;
-  const distance = Math.max(0, 80 - state.bestScore);
-  $("readinessLabel").textContent = distance === 0 ? "Readiness goal met: 80% or higher" : `Distance to readiness: ${distance} points`;
-  $("nearComplete").classList.toggle("hidden", state.sessionProgress < 85);
+.topbar h1 { margin: 0; font-size: clamp(1.5rem, 4vw, 2.2rem); }
+.top-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
+.eyebrow { margin: 0 0 .25rem; letter-spacing: .08em; text-transform: uppercase; color: #dbeafe; font-size: .8rem; font-weight: 700; }
+.blue { color: var(--blue); }
+
+main { padding: 1rem; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.2rem;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, .07);
+  margin-bottom: 1rem;
 }
 
-function addCategoryResult(category, correct) {
-  if (!state.categoryStats[category]) state.categoryStats[category] = { correct: 0, total: 0 };
-  state.categoryStats[category].total += 1;
-  if (correct) state.categoryStats[category].correct += 1;
-  saveState();
+.start-card { max-width: 760px; margin: 2rem auto; }
+
+.badge {
+  display: inline-block;
+  background: #e0f2fe;
+  color: var(--navy);
+  border-radius: 999px;
+  padding: .35rem .7rem;
+  font-weight: 700;
+  font-size: .85rem;
 }
 
-function categoryPercent(stats) {
-  if (!stats || !stats.total) return 0;
-  return Math.round((stats.correct / stats.total) * 100);
+label { display: block; margin: 1rem 0 .35rem; font-weight: 700; }
+
+input, select {
+  width: 100%;
+  max-width: 460px;
+  padding: .85rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
 }
 
-function renderCategoryBreakdown(targetId, stats) {
-  const categories = [...new Set(TERMS.map(t => t.category))];
-  $(targetId).innerHTML = categories.map(cat => {
-    const pct = categoryPercent(stats[cat]);
-    const label = pct >= 80 ? "Strong" : pct >= 50 ? "Developing" : "Needs practice";
-    return `
-      <div class="category-card">
-        <strong>${cat}</strong>
-        <span>${label} · ${pct}%</span>
-        <div class="meter"><span style="width:${pct}%"></span></div>
-      </div>
-    `;
-  }).join("");
+.primary-btn, .ghost-btn {
+  border: 0;
+  border-radius: 12px;
+  padding: .85rem 1rem;
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
 }
 
-function startApp() {
-  const name = $("studentName").value.trim();
-  state.studentName = name || "Student";
-  showOnly("dashboard");
-  updateDashboard();
+.primary-btn { background: var(--blue); color: #fff; }
+.ghost-btn { background: #eef2f7; color: var(--navy); }
+.primary-btn:hover, .ghost-btn:hover, .mode-card:hover, .choice-btn:hover, .match-btn:hover { filter: brightness(.97); }
+
+.hidden { display: none !important; }
+
+.progress-panel {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(255,255,255,.96);
+  border: 1px solid var(--line);
+  border-radius: 0 0 14px 14px;
+  padding: .8rem 1rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, .08);
 }
 
-function openDashboard() {
-  showOnly("dashboard");
-  updateDashboard();
+.progress-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: .92rem;
+  color: var(--muted);
 }
 
-function setActivity(title, kicker, counter = "") {
-  $("activityTitle").textContent = title;
-  $("activityKicker").textContent = kicker;
-  $("activityCounter").textContent = counter;
-  $("activityContent").innerHTML = "";
-  showOnly("activityScreen");
+.progress-track {
+  width: 100%;
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  margin-top: .55rem;
+  overflow: hidden;
 }
 
-function startFlashcards() {
-  state.currentMode = "flashcards";
-  state.currentItems = shuffle(TERMS).slice(0, 12);
-  state.currentIndex = 0;
-  renderFlashcard();
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--green));
+  border-radius: 999px;
+  transition: width .35s ease;
 }
 
-function renderFlashcard(showBack = false) {
-  const item = state.currentItems[state.currentIndex];
-  setActivity("Flashcards", "Term → definition → example → common mistake", `${state.currentIndex + 1} of ${state.currentItems.length}`);
-  updateProgress(Math.round((state.currentIndex / state.currentItems.length) * 100));
-  $("activityContent").innerHTML = `
-    <div class="flashcard">
-      <h3 class="flash-term">${item.term}</h3>
-      ${showBack ? `
-        <div class="stack">
-          <div class="callout"><strong>Definition:</strong> ${item.definition}</div>
-          <div class="callout"><strong>Example:</strong> ${item.example}</div>
-          <div class="callout"><strong>Common mistake:</strong> ${item.mistake}</div>
-        </div>
-        <div class="result-actions">
-          <button class="primary-btn" id="knowBtn" type="button">I knew this</button>
-          <button class="ghost-btn" id="reviewBtn" type="button">Review again</button>
-        </div>
-      ` : `
-        <p>Try to explain this term out loud before revealing the answer.</p>
-        <button class="primary-btn" id="revealBtn" type="button">Reveal</button>
-      `}
-    </div>
-  `;
-  if (!showBack) $("revealBtn").onclick = () => renderFlashcard(true);
-  else {
-    $("knowBtn").onclick = () => markFlashcard(item, true);
-    $("reviewBtn").onclick = () => markFlashcard(item, false);
+.near-complete { margin: .5rem 0 0; color: var(--green); font-weight: 700; }
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.dashboard-grid, .mode-grid, .category-grid {
+  display: grid;
+  gap: .9rem;
+}
+
+.dashboard-grid { grid-template-columns: repeat(4, 1fr); }
+.mode-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.category-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+
+.stat-card strong {
+  display: block;
+  font-size: 1.7rem;
+  margin-top: .25rem;
+}
+
+.stat-label { color: var(--muted); font-size: .9rem; }
+.readiness-card strong { color: var(--gold); }
+
+.recommendation-card { border-left: 6px solid var(--gold); }
+#adaptiveRecommendation { font-size: 1.05rem; line-height: 1.45; }
+.weak-area-list { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
+.weak-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: .45rem .7rem;
+  background: #fffbeb;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: .9rem;
+}
+.weak-pill span { color: var(--gold); }
+
+.mode-card, .choice-btn, .match-btn {
+  text-align: left;
+  background: #f8fafc;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1rem;
+  cursor: pointer;
+  min-height: 120px;
+}
+
+.mode-card span {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: #e0f2fe;
+  color: var(--navy);
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.mode-card strong { display: block; margin: .8rem 0 .25rem; }
+.mode-card small { color: var(--muted); }
+.mode-card.challenge { border-color: #f59e0b; background: #fffbeb; }
+
+.activity-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.counter { color: var(--muted); font-weight: 700; }
+
+.flashcard {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.1rem;
+  background: #f8fafc;
+}
+
+.flash-term { font-size: 1.5rem; margin: 0 0 .5rem; color: var(--navy); }
+.stack { display: grid; gap: .7rem; margin-top: 1rem; }
+.callout { padding: .8rem; border-radius: 12px; background: #fff; border: 1px solid var(--line); }
+.callout strong { color: var(--navy); }
+
+.choice-grid { display: grid; gap: .75rem; margin-top: 1rem; }
+.choice-btn { min-height: auto; }
+.choice-btn.correct-choice { border-color: var(--green); background: #ecfdf3; }
+.choice-btn.wrong-choice { border-color: var(--red); background: #fef3f2; }
+
+.feedback {
+  margin-top: 1rem;
+  padding: .95rem;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.feedback.correct { border-color: var(--green); background: #ecfdf3; color: #14532d; }
+.feedback.incorrect { border-color: var(--red); background: #fef3f2; color: #7f1d1d; }
+
+.category-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: .9rem;
+  background: #f8fafc;
+}
+
+.category-card strong { display: block; color: var(--navy); }
+.category-card .recommend { display: block; margin-top: .45rem; color: var(--muted); font-size: .85rem; }
+
+.meter { height: 9px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-top: .6rem; }
+.meter span { display: block; height: 100%; width: 0%; background: var(--green); border-radius: 99px; }
+
+.match-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.match-list { display: grid; gap: .6rem; }
+.match-btn.selected { outline: 3px solid #93c5fd; background: #eff6ff; }
+.match-btn.matched { background: #ecfdf3; border-color: var(--green); cursor: default; }
+
+.result-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1rem; }
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: .8rem;
+  overflow-x: auto;
+}
+.report-table th {
+  background: var(--navy);
+  color: #fff;
+  text-align: left;
+}
+.report-table th, .report-table td {
+  border: 1px solid var(--line);
+  padding: .7rem;
+  vertical-align: top;
+}
+
+.certificate {
+  background: #fff;
+  padding: 2rem;
+  border: 6px solid var(--navy);
+  margin: 1rem;
+}
+
+.cert-inner {
+  border: 2px solid var(--gold);
+  padding: 2rem;
+  text-align: center;
+}
+
+.cert-kicker {
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+#certName { font-size: 2rem; color: var(--navy); }
+
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: .7rem;
+  margin: 1.4rem 0;
+}
+
+.cert-grid div {
+  border: 1px solid var(--line);
+  padding: .8rem;
+  border-radius: 12px;
+}
+
+.cert-grid strong { display: block; font-size: 1.4rem; }
+.cert-grid span { color: var(--muted); font-size: .85rem; }
+.cert-note, .small-note { color: var(--muted); font-size: .9rem; }
+
+@media (max-width: 900px) {
+  .dashboard-grid, .mode-grid, .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .match-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .topbar { align-items: flex-start; flex-direction: column; }
+  .dashboard-grid, .mode-grid, .category-grid, .cert-grid { grid-template-columns: 1fr; }
+  .progress-copy { flex-direction: column; gap: .25rem; }
+  .activity-header { flex-direction: column; }
+  .mode-card { min-height: auto; }
+  .dashboard-header { display: block; }
+}
+
+@media print {
+  body * { visibility: hidden; }
+  #certificate, #certificate * { visibility: visible; }
+  #certificate {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    box-shadow: none;
   }
+  .topbar, .progress-panel, #startScreen, #dashboard, #activityScreen, #resultsScreen, #reportScreen { display: none !important; }
 }
-
-function markFlashcard(item, knewIt) {
-  if (knewIt && !state.mastered.includes(item.term)) state.mastered.push(item.term);
-  addCategoryResult(item.category, knewIt);
-  saveState();
-  state.currentIndex++;
-  if (state.currentIndex >= state.currentItems.length) {
-    updateProgress(100);
-    openDashboard();
-  } else {
-    renderFlashcard(false);
-  }
-}
-
-function startMatching() {
-  state.currentMode = "matching";
-  const items = shuffle(TERMS).slice(0, 6);
-  let selectedTerm = null;
-  let selectedDef = null;
-  let matched = new Set();
-  setActivity("Matching", "Match each term to the correct definition", `0 of ${items.length}`);
-  updateProgress(0);
-
-  function render() {
-    const termsHtml = items.map((item, idx) => `
-      <button class="match-btn ${matched.has(item.term) ? "matched" : ""}" data-kind="term" data-index="${idx}" ${matched.has(item.term) ? "disabled" : ""}>${item.term}</button>
-    `).join("");
-    const defs = shuffle(items);
-    const defsHtml = defs.map((item, idx) => `
-      <button class="match-btn ${matched.has(item.term) ? "matched" : ""}" data-kind="def" data-term="${item.term}" ${matched.has(item.term) ? "disabled" : ""}>${item.definition}</button>
-    `).join("");
-    $("activityContent").innerHTML = `
-      <div class="match-layout">
-        <div><h3>Terms</h3><div class="match-list">${termsHtml}</div></div>
-        <div><h3>Definitions</h3><div class="match-list">${defsHtml}</div></div>
-      </div>
-      <div id="matchFeedback" class="feedback hidden"></div>
-    `;
-    document.querySelectorAll(".match-btn").forEach(btn => btn.onclick = () => {
-      if (btn.dataset.kind === "term") selectedTerm = items[Number(btn.dataset.index)];
-      if (btn.dataset.kind === "def") selectedDef = btn.dataset.term;
-      document.querySelectorAll(".match-btn").forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
-      if (selectedTerm && selectedDef) checkMatch();
-    });
-  }
-
-  function checkMatch() {
-    const correct = selectedTerm.term === selectedDef;
-    addCategoryResult(selectedTerm.category, correct);
-    const fb = $("matchFeedback");
-    fb.className = `feedback ${correct ? "correct" : "incorrect"}`;
-    fb.classList.remove("hidden");
-    fb.innerHTML = correct
-      ? `<strong>Correct.</strong> ${selectedTerm.term}: ${selectedTerm.definition}`
-      : `<strong>Not yet.</strong> Recheck the definition for ${selectedTerm.term}. Common mistake: ${selectedTerm.mistake}`;
-    if (correct) matched.add(selectedTerm.term);
-    selectedTerm = null;
-    selectedDef = null;
-    $("activityCounter").textContent = `${matched.size} of ${items.length}`;
-    updateProgress(Math.round((matched.size / items.length) * 100));
-    if (matched.size === items.length) {
-      setTimeout(openDashboard, 900);
-    } else {
-      setTimeout(render, 700);
-    }
-  }
-
-  render();
-}
-
-function startTF() {
-  state.currentMode = "tf";
-  state.currentItems = shuffle(TERMS).slice(0, 10);
-  state.currentIndex = 0;
-  state.currentScore = 0;
-  renderQuestion("tf");
-}
-
-function startScenario() {
-  state.currentMode = "scenario";
-  state.currentItems = shuffle(SCENARIOS).slice(0, 8);
-  state.currentIndex = 0;
-  state.currentScore = 0;
-  renderQuestion("scenario");
-}
-
-function startFinal() {
-  state.currentMode = "final";
-  state.currentItems = shuffle([
-    ...TERMS.slice().map(t => ({
-      type: "tf",
-      category: t.category,
-      prompt: t.misconception,
-      choices: ["True", "False"],
-      answer: t.tfAnswer ? "True" : "False",
-      feedback: `${t.term}: ${t.definition} Common mistake: ${t.mistake}`
-    })),
-    ...SCENARIOS.map(s => ({...s, type: "scenario"}))
-  ]).slice(0, 20);
-  state.currentIndex = 0;
-  state.currentScore = 0;
-  state.finalResults = {};
-  state.attempts += 1;
-  saveState();
-  renderQuestion("final");
-}
-
-function renderQuestion(mode) {
-  const item = state.currentItems[state.currentIndex];
-  const title = mode === "tf" ? "Misconception Check" : mode === "scenario" ? "Scenario Practice" : "Readiness Challenge";
-  const kicker = mode === "tf" ? "True or false" : mode === "scenario" ? "Apply the rule" : "Score counts toward certificate";
-  setActivity(title, kicker, `${state.currentIndex + 1} of ${state.currentItems.length}`);
-  updateProgress(Math.round((state.currentIndex / state.currentItems.length) * 100));
-  const choices = mode === "tf" ? ["True", "False"] : shuffle(item.choices);
-  $("activityContent").innerHTML = `
-    <h3>${item.prompt}</h3>
-    <div class="choice-grid">
-      ${choices.map(choice => `<button class="choice-btn" data-choice="${choice}" type="button">${choice}</button>`).join("")}
-    </div>
-    <div id="questionFeedback" class="feedback hidden"></div>
-  `;
-  document.querySelectorAll(".choice-btn").forEach(btn => {
-    btn.onclick = () => answerQuestion(btn.dataset.choice, item, mode);
-  });
-}
-
-function answerQuestion(choice, item, mode) {
-  const correct = choice === item.answer;
-  if (correct) state.currentScore += 1;
-  addCategoryResult(item.category, correct);
-  if (mode === "final") {
-    if (!state.finalResults[item.category]) state.finalResults[item.category] = { correct: 0, total: 0 };
-    state.finalResults[item.category].total += 1;
-    if (correct) state.finalResults[item.category].correct += 1;
-  }
-  document.querySelectorAll(".choice-btn").forEach(btn => {
-    btn.disabled = true;
-    if (btn.dataset.choice === item.answer) btn.classList.add("correct-choice");
-    if (btn.dataset.choice === choice && !correct) btn.classList.add("wrong-choice");
-  });
-  const fb = $("questionFeedback");
-  fb.className = `feedback ${correct ? "correct" : "incorrect"}`;
-  fb.classList.remove("hidden");
-  fb.innerHTML = correct
-    ? `<strong>Correct.</strong> ${item.feedback}`
-    : `<strong>Correction:</strong> The better answer is <strong>${item.answer}</strong>. ${item.feedback}`;
-  const nextText = state.currentIndex + 1 >= state.currentItems.length ? "Finish" : "Next";
-  fb.innerHTML += `<div class="result-actions"><button id="nextQuestionBtn" class="primary-btn" type="button">${nextText}</button></div>`;
-  $("nextQuestionBtn").onclick = () => {
-    state.currentIndex += 1;
-    if (state.currentIndex >= state.currentItems.length) finishMode(mode);
-    else renderQuestion(mode);
-  };
-}
-
-function finishMode(mode) {
-  updateProgress(100);
-  if (mode === "final") {
-    const score = Math.round((state.currentScore / state.currentItems.length) * 100);
-    if (score > state.bestScore) state.bestScore = score;
-    saveState();
-    showResults(score);
-  } else {
-    openDashboard();
-  }
-}
-
-function showResults(score) {
-  showOnly("resultsScreen");
-  $("resultSummary").innerHTML = score >= 80
-    ? `<strong>${score}%.</strong> You met the 80% readiness target. Keep reviewing weak categories before the actual exam.`
-    : `<strong>${score}%.</strong> You are not at the 80% readiness target yet. Use the weak-area breakdown below to choose the next practice mode.`;
-  renderCategoryBreakdown("resultBreakdown", state.finalResults);
-  updateDashboard();
-  $("certName").textContent = state.studentName || "Student";
-  $("certScore").textContent = `${state.bestScore}%`;
-  $("certAttempts").textContent = state.attempts;
-  $("certDate").textContent = new Date().toLocaleDateString();
-}
-
-function printCertificate() {
-  $("certificate").classList.remove("hidden");
-  window.print();
-}
-
-function bindEvents() {
-  $("startBtn").onclick = startApp;
-  $("homeBtn").onclick = openDashboard;
-  $("returnBtn").onclick = openDashboard;
-  $("printCertBtn").onclick = printCertificate;
-  document.querySelectorAll(".mode-card").forEach(btn => {
-    btn.onclick = () => {
-      const mode = btn.dataset.mode;
-      if (mode === "flashcards") startFlashcards();
-      if (mode === "matching") startMatching();
-      if (mode === "tf") startTF();
-      if (mode === "scenario") startScenario();
-      if (mode === "final") startFinal();
-    };
-  });
-}
-
-bindEvents();
-updateDashboard();

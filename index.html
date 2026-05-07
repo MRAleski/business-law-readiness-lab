@@ -1,72 +1,195 @@
-# Business Law Final Exam Prep Lab
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Law Readiness Lab</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">BUSN 201 Business Law</p>
+      <h1>Business Law Readiness Lab</h1>
+    </div>
+    <div class="top-actions">
+      <button id="homeBtn" class="ghost-btn hidden" type="button">Dashboard</button>
+      <button id="reportBtn" class="ghost-btn hidden" type="button">Instructor Report</button>
+    </div>
+  </header>
 
-## What this is
-A ready-to-deploy interactive Business Law 201 final exam preparation tool for community college students.
+  <section id="progressPanel" class="progress-panel hidden" aria-label="Session progress">
+    <div class="progress-copy">
+      <strong id="progressLabel">0% complete</strong>
+      <span id="readinessLabel">Distance to readiness: 80 points</span>
+    </div>
+    <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div id="progressFill" class="progress-fill"></div>
+    </div>
+    <p id="nearComplete" class="near-complete hidden">You are close. Finish the current activity and take the Readiness Challenge.</p>
+  </section>
 
-The tool uses:
-- Retrieval practice
-- Immediate feedback
-- Error correction
-- Repetition
-- Category-based weak-area tracking
-- A final readiness challenge
-- A printable certificate
+  <main>
+    <section id="startScreen" class="card start-card">
+      <div class="badge">Adaptive Practice</div>
+      <h2>Prepare by practicing, not memorizing.</h2>
+      <p>This tool uses retrieval practice, immediate feedback, error correction, repetition, weak-area recommendations, and a final readiness challenge.</p>
+      <label for="studentName">Student sign-on name</label>
+      <input id="studentName" type="text" placeholder="Enter the same name each time" autocomplete="name" />
+      <p class="small-note"><strong>Important:</strong> Use the same sign-on name each time so the tool can remember your weak areas on this device and browser.</p>
+      <button id="startBtn" class="primary-btn" type="button">Start Practice</button>
+      <p class="small-note">No actual exam questions are used. Practice items are concept-based and derived from the course quiz export.</p>
+    </section>
 
-No actual exam questions are included. The practice items are concept-based.
+    <section id="dashboard" class="hidden">
+      <section class="card">
+        <div class="dashboard-header">
+          <div>
+            <h2 id="welcomeName">Practice Dashboard</h2>
+            <p class="small-note">Choose a module or select Final Comprehensive Review for mixed practice.</p>
+          </div>
+          <div>
+            <label for="moduleFilter">Practice section</label>
+            <select id="moduleFilter"></select>
+          </div>
+        </div>
+      </section>
 
-## Files
-Upload all of these files together:
-- index.html
-- style.css
-- script.js
-- terms.js
-- README.md
+      <div class="dashboard-grid">
+        <article class="card stat-card">
+          <span class="stat-label">Attempts</span>
+          <strong id="attemptsStat">0</strong>
+        </article>
+        <article class="card stat-card">
+          <span class="stat-label">Best Challenge Score</span>
+          <strong id="bestScoreStat">0%</strong>
+        </article>
+        <article class="card stat-card">
+          <span class="stat-label">Terms Mastered</span>
+          <strong id="masteredStat">0</strong>
+        </article>
+        <article class="card stat-card readiness-card">
+          <span class="stat-label">Readiness Status</span>
+          <strong id="readinessStat">Not Ready Yet</strong>
+        </article>
+      </div>
 
-## GitHub Pages Upload Instructions
-1. Go to GitHub.
-2. Create a new repository.
-3. Name it something simple, such as `business-law-final-prep`.
-4. Upload all five files into the root of the repository.
-5. Go to **Settings**.
-6. Select **Pages**.
-7. Under **Build and deployment**, select:
-   - Source: Deploy from a branch
-   - Branch: main
-   - Folder: /root
-8. Click **Save**.
-9. GitHub will provide a public link.
+      <section class="card recommendation-card">
+        <h2>Recommended Next Step</h2>
+        <p id="adaptiveRecommendation">Complete a quick practice round so the tool can identify your weak areas.</p>
+        <div id="weakAreaList" class="weak-area-list"></div>
+        <button id="startRecommendedBtn" class="primary-btn" type="button">Start Recommended Practice</button>
+      </section>
 
-Typical link format:
-`https://yourusername.github.io/business-law-final-prep/`
+      <section class="card">
+        <h2>Choose a Practice Mode</h2>
+        <div class="mode-grid">
+          <button class="mode-card" data-mode="flashcards" type="button">
+            <span>01</span>
+            <strong>Flashcards</strong>
+            <small>Term, definition, example, common mistake</small>
+          </button>
+          <button class="mode-card" data-mode="matching" type="button">
+            <span>02</span>
+            <strong>Multi-Round Matching</strong>
+            <small>6 → 8 → 10 items</small>
+          </button>
+          <button class="mode-card" data-mode="weakmatch" type="button">
+            <span>03</span>
+            <strong>Weak-Area Matching</strong>
+            <small>Targets your lowest areas</small>
+          </button>
+          <button class="mode-card" data-mode="tf" type="button">
+            <span>04</span>
+            <strong>Misconception Checks</strong>
+            <small>True/false with correction</small>
+          </button>
+          <button class="mode-card" data-mode="scenario" type="button">
+            <span>05</span>
+            <strong>Scenario Practice</strong>
+            <small>Apply concepts to business situations</small>
+          </button>
+          <button class="mode-card challenge" data-mode="final" type="button">
+            <span>06</span>
+            <strong>Readiness Challenge</strong>
+            <small>Adaptive + balanced final review</small>
+          </button>
+        </div>
+      </section>
 
-## Canvas Integration Option 1: Link
-1. In Canvas, open the module.
-2. Click the plus button.
-3. Select **External URL**.
-4. Paste the GitHub Pages link.
-5. Check **Load in a new tab**.
-6. Name it: `Launch Business Law Final Prep Tool`.
+      <section class="card">
+        <h2>Category Performance</h2>
+        <div id="categoryBreakdown" class="category-grid"></div>
+      </section>
 
-## Canvas Integration Option 2: Embed
-Use a Canvas page and paste this into the HTML editor:
+      <section class="card">
+        <h2>Module Performance</h2>
+        <div id="moduleBreakdown" class="category-grid"></div>
+      </section>
+    </section>
 
-```html
-<iframe src="YOUR_GITHUB_PAGES_LINK_HERE"
-        width="100%"
-        height="800"
-        style="border:1px solid #d9e2ec; border-radius:12px;"
-        loading="lazy">
-</iframe>
-```
+    <section id="activityScreen" class="card hidden">
+      <div class="activity-header">
+        <div>
+          <p id="activityKicker" class="eyebrow blue">Practice</p>
+          <h2 id="activityTitle">Activity</h2>
+        </div>
+        <p id="activityCounter" class="counter"></p>
+      </div>
+      <div id="activityContent"></div>
+    </section>
 
-## Recommended Student Instructions
-Use the tool more than once. Your goal is not to memorize isolated words. Your goal is to recognize legal concepts, correct common mistakes, and apply the rule to a short business scenario.
+    <section id="resultsScreen" class="card hidden">
+      <h2>Readiness Challenge Results</h2>
+      <p id="resultSummary"></p>
+      <div id="resultBreakdown" class="category-grid"></div>
+      <div class="result-actions">
+        <button id="printCertBtn" class="primary-btn" type="button">Print Certificate</button>
+        <button id="returnBtn" class="ghost-btn" type="button">Return to Dashboard</button>
+      </div>
+    </section>
 
-Suggested completion target:
-- Complete at least two practice modes
-- Complete the Readiness Challenge
-- Aim for 80% or higher
-- Print or screenshot the certificate if required by the instructor
+    <section id="reportScreen" class="card hidden">
+      <h2>Instructor Report</h2>
+      <div id="reportGate">
+        <p>This report is instructor-facing and summarizes data stored in this browser only.</p>
+        <label for="reportCode">Instructor passcode</label>
+        <input id="reportCode" type="password" placeholder="Enter passcode" />
+        <button id="unlockReportBtn" class="primary-btn" type="button">Open Report</button>
+        <p class="small-note">Default passcode is listed in the README. Change it in script.js before deployment if desired.</p>
+      </div>
+      <div id="reportContent" class="hidden">
+        <div id="reportSummary" class="dashboard-grid"></div>
+        <h3>Weak Area Trends</h3>
+        <div id="reportWeakTrends" class="category-grid"></div>
+        <h3>Student Profiles Stored on This Browser</h3>
+        <div id="reportStudents"></div>
+        <div class="result-actions">
+          <button id="downloadReportBtn" class="primary-btn" type="button">Download CSV Report</button>
+          <button id="clearOldDataBtn" class="ghost-btn" type="button">Clear Data Older Than 48 Days</button>
+        </div>
+      </div>
+    </section>
 
-## Instructor Notes
-The tool stores attempts, best score, mastered terms, and category performance in the browser's local storage. This means progress is saved on the same device and browser, but it does not send student data to Canvas or any external server.
+    <section id="certificate" class="certificate hidden" aria-label="Certificate of completion">
+      <div class="cert-inner">
+        <p class="cert-kicker">Certificate of Business Law Readiness Practice</p>
+        <h2 id="certName">Student Name</h2>
+        <p>completed the BUSN 201 Business Law Readiness Challenge.</p>
+        <div class="cert-grid">
+          <div><strong id="certScore">0%</strong><span>Best Score</span></div>
+          <div><strong id="certAttempts">0</strong><span>Attempts</span></div>
+          <div><strong id="certDate"></strong><span>Date</span></div>
+          <div><strong id="certTimeOnTask">0 sec</strong><span>Time on Task</span></div>
+        </div>
+        <p class="cert-note">This certificate verifies practice completion. It does not reveal or reproduce exam questions.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="terms.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
